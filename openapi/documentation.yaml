@@ -1,0 +1,427 @@
+openapi: 3.0.3
+info:
+  title: Ktor API Documentation
+  version: 1.0.0
+  description: API documentation for the Ktor backend server
+servers:
+  - url: http://localhost:8080
+
+tags:
+  - name: Authentication
+    description: Endpoints related to user authentication
+  - name: Test History
+    description: Endpoints for managing test history
+  - name: User Data
+    description: Endpoints for user-related data
+  - name: Pharmacy Locations
+    description: Endpoints for pharmacy location data
+  - name: News
+    description: Endpoints for news articles
+  - name: AI Consultation
+    description: AI-powered consultation endpoint
+
+paths:
+  /register/mail:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendOtpRequest'
+      responses:
+        '200':
+          description: JWT Bearer Token
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /login/mail:
+    post:
+      tags:
+        - Authentication
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthWithMailRequest'
+      responses:
+        '200':
+          description: JWT Bearer Token
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /test-history:
+    get:
+      tags:
+        - Test History
+      summary: Get test history
+      responses:
+        '200':
+          description: List of test history records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TestHistoryResponse'
+    post:
+      tags:
+        - Test History
+      summary: Add a new test history record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestHistoryRequest'
+      responses:
+        '201':
+          description: Test history created
+
+  /user-data:
+    get:
+      tags:
+        - User Data
+      summary: Get user data
+      responses:
+        '200':
+          description: User data response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDataResponse'
+    post:
+      tags:
+        - User Data
+      summary: Update user data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataRequest'
+      responses:
+        '200':
+          description: User data updated
+
+  /location/pharmacy:
+    get:
+      tags:
+        - Pharmacy Locations
+      summary: Get list of pharmacies
+      responses:
+        '200':
+          description: List of pharmacy locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PharmacyLocationResponse'
+    post:
+      tags:
+        - Pharmacy Locations
+      summary: Add a pharmacy location
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PharmacyLocationRequest'
+      responses:
+        '201':
+          description: Pharmacy location added
+
+  /news:
+    get:
+      tags:
+        - News
+      summary: Get news articles
+      responses:
+        '200':
+          description: List of news articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsResponse'
+    post:
+      tags:
+        - News
+      summary: Add a news article
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsRequest'
+      responses:
+        '201':
+          description: News article added
+
+  /ai/consultation:
+    post:
+      tags:
+        - AI Consultation
+      summary: AI Consultation
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: AI Response
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /ai/consultation/history:
+    get:
+      tags:
+        - AI Consultation
+      summary: Get consultation history
+      responses:
+        '200':
+          description: List of AI consultation history records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConsultationHistoryResponseModel'
+
+  /register/gmail:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user with Gmail authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthWithGmailRequest'
+      responses:
+        '200':
+          description: JWT Bearer Token
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /login/gmail:
+    post:
+      tags:
+        - Authentication
+      summary: Login with Gmail authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthWithGmailRequest'
+      responses:
+        '200':
+          description: JWT Bearer Token
+          content:
+            application/json:
+              schema:
+                type: string
+
+components:
+  schemas:
+    SendOtpRequest:
+      type: object
+      properties:
+        email:
+          type: string
+
+    AuthWithMailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    TestHistoryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        testTitle:
+          type: string
+        testDescription:
+          type: string
+        labName:
+          type: string
+        testDateMillis:
+          type: integer
+          format: int64
+        testFileUrl:
+          type: string
+        isRead:
+          type: boolean
+
+    TestHistoryRequest:
+      type: object
+      properties:
+        testTitle:
+          type: string
+        testDescription:
+          type: string
+        labName:
+          type: string
+        testDateMillis:
+          type: integer
+          format: int64
+        testFileUrl:
+          type: string
+
+    UserDataResponse:
+      type: object
+      properties:
+        fullName:
+          type: string
+        bloodType:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        weight:
+          type: number
+          nullable: true
+        dateOfBirthMillis:
+          type: integer
+          format: int64
+          nullable: true
+        allergies:
+          type: array
+          items:
+            type: string
+
+    UserDataRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          nullable: true
+        bloodType:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          nullable: true
+        weight:
+          type: number
+          nullable: true
+        dateOfBirthMillis:
+          type: integer
+          format: int64
+          nullable: true
+        allergies:
+          type: array
+          items:
+            type: string
+
+    PharmacyLocationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        pharmacyName:
+          type: string
+        iconUrl:
+          type: string
+        website:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+
+    PharmacyLocationRequest:
+      type: object
+      properties:
+        pharmacyName:
+          type: string
+        iconUrl:
+          type: string
+        website:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+
+    NewsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        imageLink:
+          type: string
+        readMoreLink:
+          type: string
+        extras:
+          type: string
+
+    NewsRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        imageLink:
+          type: string
+        readMoreLink:
+          type: string
+        extras:
+          type: string
+
+    AuthWithGmailRequest:
+      type: object
+      properties:
+        token:
+          type: string
+
+    ConsultationHistoryResponseModel:
+      type: object
+      properties:
+        promptId:
+          type: integer
+        userPrompt:
+          type: string
+        aiResponse:
+          type: string
